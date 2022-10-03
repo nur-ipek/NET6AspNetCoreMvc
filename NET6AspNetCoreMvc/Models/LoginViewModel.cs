@@ -10,7 +10,7 @@ namespace NET6AspNetCoreMvc.Models
         [StringLength(30, ErrorMessage = "Kullanıcı adı en fazla 30 karakter olabilir!")]
         public string Username { get; set; }
 
-        [Display(Name = "Şifre:", Prompt = "johndoe")]
+        [Display(Name = "Şifre:", Prompt = "password")]
         [DataType(DataType.Password)]
         [Required(ErrorMessage ="Şifre zorunludur.")]
         [MinLength(6,ErrorMessage ="Şifre en az 6 karakter olmalıdır!")]

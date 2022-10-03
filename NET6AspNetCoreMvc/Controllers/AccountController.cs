@@ -25,6 +25,16 @@ namespace NET6AspNetCoreMvc.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult Register(RegisterViewModel registerViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+
+            }
+            return View(registerViewModel);
+        }
+
         public IActionResult Profile()
         {
             return View();

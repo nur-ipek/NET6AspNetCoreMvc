@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using NET6AspNetCoreMvc.Entities;
+
 namespace NET6AspNetCoreMvc
 {
     public class Program
@@ -8,10 +11,16 @@ namespace NET6AspNetCoreMvc
 
             // Add services to the container.
             builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            builder.Services.AddDbContext<DatabaseContext>(opts =>
+            {
+                opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                //opts.UseLazyLoadingProxies();
+            });
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+            // < pipeline
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -25,6 +34,7 @@ namespace NET6AspNetCoreMvc
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+            //  pipeline >
 
             app.Run();
         }

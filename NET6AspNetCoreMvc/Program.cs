@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using NET6AspNetCoreMvc.Entities;
 
@@ -16,6 +17,20 @@ namespace NET6AspNetCoreMvc
                 opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
                 //opts.UseLazyLoadingProxies();
             });
+
+            builder.Services
+                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(opts =>
+                {
+                    opts.Cookie.Name= ".NET6AspNetCoreMvc.Auth";
+                    opts.ExpireTimeSpan = TimeSpan.FromDays(7);
+                    opts.SlidingExpiration = false;
+                    opts.LoginPath = "/Account/Login";
+                    opts.LogoutPath= "/Account/Logout";
+                    opts.AccessDeniedPath= "/Home/AccessDenied";
+
+                }
+                );
 
             var app = builder.Build();
 

@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using NET6AspNetCoreMvc.Entities;
 using NET6AspNetCoreMvc.Models;
 using NETCore.Encrypt.Extensions;
+using System.Security.Claims;
 
 namespace NET6AspNetCoreMvc.Controllers
 {
@@ -13,7 +16,7 @@ namespace NET6AspNetCoreMvc.Controllers
         public AccountController(DatabaseContext databaseContext, IConfiguration configuration)
         {
             _databaseContext = databaseContext;
-            _configuration = configuration; 
+            _configuration = configuration;
         }
         public IActionResult Login()
         {
@@ -29,7 +32,7 @@ namespace NET6AspNetCoreMvc.Controllers
                 var saltedPassword = loginViewModel.Password + md5Salt;
                 var hashedPassword = saltedPassword.MD5();
 
-                User user = _databaseContext.Users.FirstOrDefault(x=> x.Password == hashedPassword && x.UserName.ToLower() == loginViewModel.Username.ToLower());
+                User user = _databaseContext.Users.FirstOrDefault(x => x.Password == hashedPassword && x.UserName.ToLower() == loginViewModel.Username.ToLower());
 
                 if (user != null)
                 {
@@ -38,6 +41,21 @@ namespace NET6AspNetCoreMvc.Controllers
                         ModelState.AddModelError(nameof(loginViewModel.Username), "Kullanıcı kilitli.");
                         return View(loginViewModel);
                     }
+
+                    //Cookie
+                    List<Claim> claims = new List<Claim>();
+                    claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
+                    claims.Add(new Claim(ClaimTypes.Name, user.NameSurname ?? string.Empty));
+                    claims.Add(new Claim("Username", user.UserName));
+
+                    ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    ClaimsPrincipal principal = new ClaimsPrincipal(claimsIdentity);
+
+                    HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+                    return RedirectToAction("Index", "Home");
+
                 }
 
                 else
@@ -58,7 +76,7 @@ namespace NET6AspNetCoreMvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_databaseContext.Users.Any(x=>x.UserName.ToLower() == registerViewModel.Username.ToLower()))
+                if (_databaseContext.Users.Any(x => x.UserName.ToLower() == registerViewModel.Username.ToLower()))
                 {
                     ModelState.AddModelError(nameof(registerViewModel.Username), "Bu kullanıcı daha önceden alınmış.");
                 }

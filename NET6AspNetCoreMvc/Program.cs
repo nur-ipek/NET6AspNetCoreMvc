@@ -36,6 +36,7 @@ namespace NET6AspNetCoreMvc
 
             // Configure the HTTP request pipeline.
             // < pipeline
+            //Bir istek geldiðinde neleri kontrol edeceðiz...
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -43,6 +44,8 @@ namespace NET6AspNetCoreMvc
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

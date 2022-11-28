@@ -25,7 +25,25 @@ namespace NET6AspNetCoreMvc.Controllers
             //ModelState controller seviyesinde gelmektedir.
             if (ModelState.IsValid)
             {
+                var md5Salt = _configuration.GetValue<string>("AppSettings:MD5Salt");
+                var saltedPassword = loginViewModel.Password + md5Salt;
+                var hashedPassword = saltedPassword.MD5();
 
+                User user = _databaseContext.Users.FirstOrDefault(x=> x.Password == hashedPassword && x.UserName.ToLower() == loginViewModel.Username.ToLower());
+
+                if (user != null)
+                {
+                    if (user.Locked)
+                    {
+                        ModelState.AddModelError(nameof(loginViewModel.Username), "Kullanıcı kilitli.");
+                        return View(loginViewModel);
+                    }
+                }
+
+                else
+                {
+                    ModelState.AddModelError("", "Kullanıcı adı ya da şifre yanlış");
+                }
             }
             return View(loginViewModel);
         }
@@ -40,6 +58,11 @@ namespace NET6AspNetCoreMvc.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (_databaseContext.Users.Any(x=>x.UserName.ToLower() == registerViewModel.Username.ToLower()))
+                {
+                    ModelState.AddModelError(nameof(registerViewModel.Username), "Bu kullanıcı daha önceden alınmış.");
+                }
+
                 var md5Salt = _configuration.GetValue<string>("AppSettings:MD5Salt");
                 var saltedPassword = registerViewModel.Password + md5Salt;
                 var hashedPassword = saltedPassword.MD5();

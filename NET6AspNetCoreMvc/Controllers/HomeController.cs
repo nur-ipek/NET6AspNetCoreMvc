@@ -25,6 +25,12 @@ namespace NET6AspNetCoreMvc.Controllers
             return View();
         }
 
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
         //[AllowAnonymous] -> Bu metotlara giriş serbesttir. Login olmaya ihtiyaç yoktur.
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

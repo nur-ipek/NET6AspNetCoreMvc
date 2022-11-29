@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using NET6AspNetCoreMvc.Entities;
 using NET6AspNetCoreMvc.Models;
 using NETCore.Encrypt.Extensions;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace NET6AspNetCoreMvc.Controllers
@@ -120,8 +121,41 @@ namespace NET6AspNetCoreMvc.Controllers
 
         public IActionResult Profile()
         {
+
+            ProfileInfoLoader();
             return View();
         }
+
+        public void ProfileInfoLoader()
+        {
+            Guid userId = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            User user = _databaseContext.Users.SingleOrDefault(x => x.Id == userId);
+            ViewData["username"] = user.NameSurname;
+        }
+
+
+        [HttpPost]
+        public IActionResult ProfileChangeFullName([Required][StringLength(50)] string? fullname) 
+        
+        {
+            if(ModelState.IsValid) {
+                //View'da ve burada User nesnesi kullanabiliyoruz.(Cookie)
+                Guid userId = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                User user = _databaseContext.Users.SingleOrDefault(x => x.Id == userId);
+
+                if (user != null)
+                {
+                    user.NameSurname= fullname;
+                    _databaseContext.SaveChanges();
+                }
+                RedirectToAction(nameof(Profile));
+           
+            }
+            ProfileInfoLoader();
+            return View("Profile");
+        }    
 
         public IActionResult Logout() 
         {

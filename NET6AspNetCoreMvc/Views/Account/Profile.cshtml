@@ -1,1 +1,29 @@
-﻿Profile 
+﻿@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="row">
+    <div class="col-4 offset-4">
+        <h1 class="display-4 border-bottom text-center pb-2">@ViewData["Title"]</h1>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-4">
+
+        <div class="md-4">
+            <div asp-validation-summary="All" class="text-danger small"></div>
+        </div>
+        
+        <form method="post" asp-action="ProfileChangeFullName">
+            <div class="form-group">
+
+                <div class="input-group mb-3">
+                    <input name="fullname" type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2" value=@ViewData["username"]> 
+                    <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Save</button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NET6AspNetCoreMvc.Models;
 using System.Diagnostics;
 
@@ -13,6 +14,7 @@ namespace NET6AspNetCoreMvc.Controllers
             _logger = logger;
         }
 
+        [Authorize]
         public IActionResult Index()
         {
             return View();
@@ -23,6 +25,7 @@ namespace NET6AspNetCoreMvc.Controllers
             return View();
         }
 
+        //[AllowAnonymous] -> Bu metotlara giriş serbesttir. Login olmaya ihtiyaç yoktur.
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

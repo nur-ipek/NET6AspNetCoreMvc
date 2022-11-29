@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NET6AspNetCoreMvc.Entities;
 using NET6AspNetCoreMvc.Models;
@@ -8,6 +9,7 @@ using System.Security.Claims;
 
 namespace NET6AspNetCoreMvc.Controllers
 {
+    [Authorize]
     public class AccountController : Controller
     {
         private readonly DatabaseContext _databaseContext;
@@ -18,10 +20,14 @@ namespace NET6AspNetCoreMvc.Controllers
             _databaseContext = databaseContext;
             _configuration = configuration;
         }
+
+        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
         }
+
+        [AllowAnonymous]
         [HttpPost]
         public IActionResult Login(LoginViewModel loginViewModel)
         {
@@ -66,11 +72,13 @@ namespace NET6AspNetCoreMvc.Controllers
             return View(loginViewModel);
         }
 
+        [AllowAnonymous]
         public IActionResult Register()
         {
             return View();
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public IActionResult Register(RegisterViewModel registerViewModel)
         {

@@ -28,6 +28,7 @@ namespace NET6AspNetCoreMvc
                     opts.LoginPath = "/Account/Login";
                     opts.LogoutPath= "/Account/Logout";
                     opts.AccessDeniedPath= "/Home/AccessDenied";
+                    //Burasý kullanýcýnýn rolünü kontrol eder. Login olup olmadýðýna bakmaz. Kullanýcý rolünün yetkisi yoksa kullanýcýyý /Home/AccessDenied'a gönderir.
 
                 }
                 );

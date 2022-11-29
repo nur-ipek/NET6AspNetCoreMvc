@@ -35,9 +35,7 @@ namespace NET6AspNetCoreMvc.Controllers
             //ModelState controller seviyesinde gelmektedir.
             if (ModelState.IsValid)
             {
-                var md5Salt = _configuration.GetValue<string>("AppSettings:MD5Salt");
-                var saltedPassword = loginViewModel.Password + md5Salt;
-                var hashedPassword = saltedPassword.MD5();
+                string hashedPassword = DoMD5HashedString(loginViewModel.Password);
 
                 User user = _databaseContext.Users.FirstOrDefault(x => x.Password == hashedPassword && x.UserName.ToLower() == loginViewModel.Username.ToLower());
 
@@ -72,6 +70,14 @@ namespace NET6AspNetCoreMvc.Controllers
                 }
             }
             return View(loginViewModel);
+        }
+
+        private string DoMD5HashedString(string s)
+        {
+            var md5Salt = _configuration.GetValue<string>("AppSettings:MD5Salt");
+            var salted = s + md5Salt;
+            var hashed = salted.MD5();
+            return hashed;
         }
 
         [AllowAnonymous]
@@ -155,7 +161,32 @@ namespace NET6AspNetCoreMvc.Controllers
             }
             ProfileInfoLoader();
             return View("Profile");
-        }    
+        }
+
+        [HttpPost]
+        public IActionResult ProfileChangePassword([Required][MinLength(6)][MaxLength(16)] string? password)
+
+        {
+            if (ModelState.IsValid)
+            {
+                //View'da ve burada User nesnesi kullanabiliyoruz.(Cookie)
+                Guid userId = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                User user = _databaseContext.Users.SingleOrDefault(x => x.Id == userId);
+
+                
+                if (user != null)
+                {
+                    user.Password = DoMD5HashedString(password);
+                    _databaseContext.SaveChanges();
+                }
+
+                ViewData["result"] = "PasswordChanged";
+
+            }
+            ProfileInfoLoader();
+            return View("Profile");
+        }
 
         public IActionResult Logout() 
         {

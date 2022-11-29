@@ -52,6 +52,7 @@ namespace NET6AspNetCoreMvc.Controllers
                     List<Claim> claims = new List<Claim>();
                     claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
                     claims.Add(new Claim(ClaimTypes.Name, user.NameSurname ?? string.Empty));
+                    claims.Add(new Claim(ClaimTypes.Role, user.Role));
                     claims.Add(new Claim("Username", user.UserName));
 
                     ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

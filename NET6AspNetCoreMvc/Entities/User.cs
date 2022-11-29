@@ -13,7 +13,7 @@ namespace NET6AspNetCoreMvc.Entities
         public string? NameSurname { get; set; }
 
         [Required]
-        [StringLength(50)] // Bu değerleri girmediğimizde nvarchar max olmakta.
+        [StringLength(50)] // Bu değerleri girmediğimizde nvarchar(max) olmakta.
         public string UserName { get; set; }
 
         [Required]
@@ -22,5 +22,9 @@ namespace NET6AspNetCoreMvc.Entities
 
         public bool Locked { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        [Required]
+        [StringLength(50)]
+        public string Role { get; set; } = "User";
     }
 }

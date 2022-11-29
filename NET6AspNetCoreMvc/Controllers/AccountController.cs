@@ -113,5 +113,11 @@ namespace NET6AspNetCoreMvc.Controllers
         {
             return View();
         }
+
+        public IActionResult Logout() 
+        {
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction(nameof(Login));    
+        }
     }
 }

@@ -39,6 +39,19 @@
                 }
             </div>
         </form>
-
+       
     </div>
 </div>
+
+@section Scripts{
+    @if (ViewData["result"] != null)
+    {
+        <script>
+            toastr["success"]("Şifre değiştirme işlemi BAŞARILI !")
+
+
+        </script>
+    }
+
+
+}
